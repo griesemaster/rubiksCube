@@ -46,7 +46,7 @@ float lastFrame = 0.0f;
 float deltaTime = 0.0f;
 
 // create cube object
-Cube cube = Cube();
+Cube cube = Cube(3);
 
 int main()
 {

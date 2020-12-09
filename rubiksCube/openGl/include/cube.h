@@ -1,5 +1,7 @@
 #include<glm/gtc/matrix_transform.hpp>
 #include<cubie.h>
+#include<tgmath.h>
+#include<list>
 
 #ifndef CUBE
 #define CUBE
@@ -7,17 +9,21 @@
 class Cube {
 
 private:
-	Cubie cubieList[27];
+	std::list<Cubie> cubieList;
 	float rotateTime = 0;
 	float lastCommandTime;
 	float commandDelay;
 	glm::mat2 clockwiseRotationMat;
 	glm::mat2 counterwiseRotationMat;
+	int cubeDimension;
+
 
 public:
-	Cube() {
+	Cube(int dimension) {
 		lastCommandTime = glfwGetTime();
 		commandDelay = 0.3f;
+
+		cubeDimension = dimension;
 
 		//create clockwise 2D rotation matrix
 		float x = glm::radians(90.0f);
@@ -31,12 +37,10 @@ public:
 	}
 
 	void generateCubies() {
-		int index = 0;
-		for (float x = -1; x < 2; x++) {
-			for (float y = -1; y < 2; y++) {
-				for (float z = -1; z < 2; z++) {
-					cubieList[index] = Cubie(glm::vec3(x, y, z), x, y, z);
-					index++;
+		for (float x = 0; x < cubeDimension; x++) {
+			for (float y = 0; y < cubeDimension; y++) {
+				for (float z = 0; z < cubeDimension; z++) {
+					cubieList.emplace_back(Cubie(glm::vec3(x, y, z), x, y, z));
 				}
 			}
 		}
@@ -44,46 +48,23 @@ public:
 	}
 
 	void draw(Shader ourShader) {
-		for (int index = 0; index < 27; index++) {
-			cubieList[index].draw(ourShader);
+		for (Cubie currentCubie : cubieList) {
+			currentCubie.draw(ourShader);
 		}
 	}
 
 	void reset() {
-		for (int index = 0; index < sizeof(cubieList) / sizeof(Cubie); index++) {
-			cubieList[index].reset();
-		}
+
 	}
 
 
 	//Z Face Rotations
 	void rotateZPositiveClockwise(bool automated) {
-		float currentCommandTime = glfwGetTime();
-		if ((currentCommandTime - lastCommandTime > commandDelay) || (automated)) {
-			for (int index = 0; index < sizeof(cubieList) / sizeof(Cubie); index++) {
-				if (cubieList[index].getZ() == 1) {
-					Cubie qb = cubieList[index];
-					qb.rotate(90.0f, glm::vec3(0, 0, 1));
-				}
-			}
-			lastCommandTime = currentCommandTime;
-		}
+
 	}
 
 	void rotateZPositiveCounterwise(bool automated) {
-		float currentCommandTime = glfwGetTime();
-		if ((currentCommandTime - lastCommandTime > commandDelay) || (automated)) {
-			for (int index = 0; index < sizeof(cubieList) / sizeof(Cubie); index++) {
-				if (cubieList[index].getZ() == 1) {
-					Cubie qb = cubieList[index];
-					qb.rotate(-90.0f, glm::vec3(0, 0, 1));
-					//glm::vec2 slicePos = glm::vec2(qb.getX(), qb.getY());
-					//glm::vec2 finalPos = counterwiseRotationMat * slicePos;
-					//qb.setPos(glm::vec3(finalPos, qb.getZ()));
-				}
-			}
-			lastCommandTime = currentCommandTime;
-		}
+
 	}
 
 	void rotateZNegativeClockwise(bool automated) {
