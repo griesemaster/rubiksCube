@@ -20,14 +20,20 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow* window);
 
 // settings
-const unsigned int SCR_WIDTH = 900;
-const unsigned int SCR_HEIGHT = 900;
+unsigned int SCR_WIDTH = 900;
+unsigned int SCR_HEIGHT = 900;
+
+
+// create cube object
+float dimension = 3.0f;
+Cube cube = Cube(dimension);
 
 // camera setup
 // ------------------------------------
-glm::vec3 cameraPos = glm::vec3(-5.0f, 4.0f, 6.0f);
-glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
+// camera is done after the cube declariation so that the cube can be centered in the frame (starts from 0,0 and goes to +dim, +dim)
+glm::vec3 cameraPos = glm::vec3(dimension * 2, dimension * 2, dimension * 2);
+glm::vec3 cameraFront = glm::vec3(-1.0f, -1.0f, -1.0f);
+glm::vec3 cameraTarget = glm::vec3(dimension, dimension, dimension);
 glm::vec3 cameraDirection = glm::normalize(cameraPos - cameraTarget);
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
@@ -45,8 +51,7 @@ float lastX = SCR_WIDTH / 2, lastY = SCR_HEIGHT / 2;
 float lastFrame = 0.0f;
 float deltaTime = 0.0f;
 
-// create cube object
-Cube cube = Cube(3);
+
 
 int main()
 {
@@ -60,7 +65,7 @@ int main()
 
     // glfw window creation
     // --------------------
-    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Rubik's Cube Simulator", NULL, NULL);
     if (window == NULL)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -88,8 +93,6 @@ int main()
 
     // build and compile our shader program
     // ------------------------------------
-
-
     Shader ourShader("C:\\Users\\Michael\\source\\repos\\rubiksCube\\rubiksCube\\openGl\\shaderSrc\\shader.vs", "C:\\Users\\Michael\\source\\repos\\rubiksCube\\rubiksCube\\openGl\\shaderSrc\\shader.fs");
 
 
@@ -224,7 +227,6 @@ int main()
     glBindBuffer(GL_ARRAY_BUFFER, 0);   //remove VAO and VBO from the edit pointers to prevent accidental changes - we are set up to draw! 
     glBindVertexArray(0);
 
-
     cube.generateCubies();
 
 
@@ -249,9 +251,17 @@ int main()
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        //bind the generated buffers after clearing
+        glBindVertexArray(VAO);
+        glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_DYNAMIC_DRAW);
+
+        glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer); //bind VBO as current buffer to edit
+        glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVerticies), cubeVerticies, GL_DYNAMIC_DRAW);  //input vertex data into the vertex buffer
+
+
         //enable wireframe mode
         //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
 
         // activate shader
         ourShader.use();
@@ -263,82 +273,9 @@ int main()
         //FOV -             Aspect Ratio -      Near Distance - Far Distance
         ourShader.setMat4("projection", projection);
         view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-
         ourShader.setMat4("view", view);
 
-        // render control box
-        glBindVertexArray(VAO);
-        for (unsigned int i = 0; i < sizeof(cubePositions) / sizeof(glm::vec3); i++)
-        {
-            glm::mat4 model = glm::mat4(1.0f);
-            model = glm::translate(model, cubePositions[i]);
-            if (i % 2 == 1) {
-                // model = glm::rotate(model, glm::radians(45.0f), glm::vec3(0, 1, 0));
-                float newColors[] = {
-                    //first triangle
-                     (float)sin(glfwGetTime()), 0.0f, 0.0f,
-                     0.0f, (float)cos(glfwGetTime()), 0.0f,
-                     0.0f, 0.0f, (float)tan(glfwGetTime()),
-                     //second triangle
-                     (float)sin(glfwGetTime()), 0.0f, 0.0f,
-                     0.0f, (float)cos(glfwGetTime()), 0.0f,
-                     0.0f, 0.0f, (float)tan(glfwGetTime()),
-
-                     (float)sin(glfwGetTime()), 0.0f, 0.0f,
-                     0.0f, (float)cos(glfwGetTime()), 0.0f,
-                     0.0f, 0.0f, (float)tan(glfwGetTime()),
-                     //second triangle
-                     (float)sin(glfwGetTime()), 0.0f, 0.0f,
-                     0.0f, (float)cos(glfwGetTime()), 0.0f,
-                     0.0f, 0.0f, (float)tan(glfwGetTime()),
-
-                     (float)sin(glfwGetTime()), 0.0f, 0.0f,
-                     0.0f, (float)cos(glfwGetTime()), 0.0f,
-                     0.0f, 0.0f, (float)tan(glfwGetTime()),
-                     //second triangle
-                     (float)sin(glfwGetTime()), 0.0f, 0.0f,
-                     0.0f, (float)cos(glfwGetTime()), 0.0f,
-                     0.0f, 0.0f, (float)tan(glfwGetTime()),
-
-                     (float)sin(glfwGetTime()), 0.0f, 0.0f,
-                     0.0f, (float)cos(glfwGetTime()), 0.0f,
-                     0.0f, 0.0f, (float)tan(glfwGetTime()),
-                     //second triangle
-                     (float)sin(glfwGetTime()), 0.0f, 0.0f,
-                     0.0f, (float)cos(glfwGetTime()), 0.0f,
-                     0.0f, 0.0f, (float)tan(glfwGetTime()),
-
-                     (float)sin(glfwGetTime()), 0.0f, 0.0f,
-                     0.0f, (float)cos(glfwGetTime()), 0.0f,
-                     0.0f, 0.0f, (float)tan(glfwGetTime()),
-                     //second triangle
-                     (float)sin(glfwGetTime()), 0.0f, 0.0f,
-                     0.0f, (float)cos(glfwGetTime()), 0.0f,
-                     0.0f, 0.0f, (float)tan(glfwGetTime()),
-
-                     (float)sin(glfwGetTime()), 0.0f, 0.0f,
-                     0.0f, (float)cos(glfwGetTime()), 0.0f,
-                     0.0f, 0.0f, (float)tan(glfwGetTime()),
-                     //second triangle
-                     (float)sin(glfwGetTime()), 0.0f, 0.0f,
-                     0.0f, (float)cos(glfwGetTime()), 0.0f,
-                     0.0f, 0.0f, (float)tan(glfwGetTime())
-                };
-                glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
-                glBufferData(GL_ARRAY_BUFFER, sizeof(newColors), newColors, GL_DYNAMIC_DRAW);
-            }
-            else {
-                glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
-                glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_DYNAMIC_DRAW);
-            }
-
-
-            glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer); //bind VBO as current buffer to edit
-            glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVerticies), cubeVerticies, GL_DYNAMIC_DRAW);  //input vertex data into the vertex buffer
-            ourShader.setMat4("model", model);
-            glDrawArrays(GL_TRIANGLES, 0, 36);
-        }
-
+    
 
         //draw the cube
         cube.draw(ourShader);
@@ -394,6 +331,8 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     //resize viewport to match new dimensions
     glViewport(0, 0, width, height);
+    SCR_HEIGHT = height;
+    SCR_WIDTH = width;
 }
 
 
@@ -403,6 +342,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
         lastX = xpos;
         lastY = ypos;
         firstMouse = false;
+
     }
 
     float deltaX = xpos - lastX;

@@ -13,7 +13,6 @@ class Cubie {
 private:
 	glm::vec3 localPosition;
 	float x, y, z;
-	bool isRotated = false;
 	glm::mat4 modelMatrix = glm::mat4(1.0f);
 
 public:
@@ -35,7 +34,6 @@ public:
 	void draw(Shader ourShader) {
 		ourShader.setMat4("model", modelMatrix);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
-		
 	}
 
 	float getX() {
