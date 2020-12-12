@@ -21,11 +21,13 @@
     <ClCompile Include="openGl\src\glad.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="rubkisCube.cpp">
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\Cube\Cube\shader.fs">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="cubie.cpp">
+    </None>
+    <None Include="..\..\Cube\Cube\shader.vs">
       <Filter>Source Files</Filter>
-    </ClCompile>
+    </None>
   </ItemGroup>
 </Project>
