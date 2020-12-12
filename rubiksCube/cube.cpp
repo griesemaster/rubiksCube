@@ -40,7 +40,7 @@ bool Cube::checkValidCommand() {
 
 //Z Face Rotations
 void Cube::rotateZzeroClockwise(bool automated) {
-	if (Cube::checkValidCommand()) {
+	if (checkValidCommand()) {
 		for (Cubie currentCubie : cubieList) {
 			if (currentCubie.getZ() == 1) {
 				glm::mat4 currentRotation = currentCubie.getModel();
@@ -51,18 +51,3 @@ void Cube::rotateZzeroClockwise(bool automated) {
 		lastCommandTime = glfwGetTime();
 	}
 }
-
-void Cube::rotateZzeroCounterwise(bool automated) {
-	if (Cube::checkValidCommand()) {
-		for (Cubie currentCubie : cubieList) {
-			if (currentCubie.getZ() == 1) {
-				glm::mat4 currentRotation = currentCubie.getModel();
-				glm::mat4 newRotation = glm::rotate(currentRotation, glm::radians(-90.0f), glm::vec3(0, 0, 1));
-				currentCubie.setModel(newRotation);
-			}
-		}
-		lastCommandTime = glfwGetTime();
-	}
-}
-
-

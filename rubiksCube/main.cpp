@@ -315,9 +315,9 @@ void processInput(GLFWwindow* window)
 
     //Y Face rotations key bindings
     if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
-        cube.rotateZPositiveClockwise(false);
+      
     if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
-        cube.rotateZPositiveCounterwise(false);
+
 
     //fun keybinds
     if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS)
