@@ -142,12 +142,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="cubie.cpp" />
+    <ClCompile Include="rubkisCube.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="openGl\src\glad.c" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\Cube\Cube\shader.fs" />
-    <None Include="..\..\Cube\Cube\shader.vs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

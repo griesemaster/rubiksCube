@@ -6,5 +6,3 @@ void main()
 {
     FragColor = vec4(ourColor, 1.0f);
 }
-
-//TODO: clear out the old color code

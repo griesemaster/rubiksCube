@@ -313,11 +313,12 @@ void processInput(GLFWwindow* window)
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
 
-    //Y Face rotations key bindings
+    //Z Face rotations key bindings
     if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
-        cube.rotateZPositiveClockwise(false);
+        std::cout << "Triggered ZzeroClockwise" << std::endl;
+        cube.rotateZzeroClockwise(false);
     if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
-        cube.rotateZPositiveCounterwise(false);
+        cube.rotateZzeroCounterwise(false);
 
     //fun keybinds
     if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS)
