@@ -142,8 +142,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="cube.cpp" />
     <ClCompile Include="cubie.cpp" />
-    <ClCompile Include="rubkisCube.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="openGl\src\glad.c" />
   </ItemGroup>
