@@ -19,7 +19,7 @@ void Cube::generateCubies() {
 	std::cout << "made cubies" << std::endl;
 }
 
-void Cube::draw(Shader ourShader) {
+void Cube::draw(Shader* ourShader) {
 	for (Cubie currentCubie : cubieList) {
 		currentCubie.draw(ourShader);
 	}
@@ -39,15 +39,12 @@ bool Cube::checkValidCommand() {
 }
 
 //Z Face Rotations
-void Cube::rotateZzeroClockwise(bool automated) {
+void Cube::rotateZClockwise(bool automated) {
 	if (checkValidCommand()) {
-		for (Cubie currentCubie : cubieList) {
-			if (currentCubie.getZ() == 1) {
-				glm::mat4 currentRotation = currentCubie.getModel();
-				glm::mat4 newRotation = glm::rotate(currentRotation, glm::radians(90.0f), glm::vec3(0, 0, 1));
-				currentCubie.setModel(newRotation);
-			}
+		for (Cubie& currentCubie : cubieList) {
+			currentCubie.rotate(50.0f, glm::vec3(0.5f, 1.0f, 0.0f));
 		}
+		std::cout << "Rotated Cubies" << std::endl;
 		lastCommandTime = glfwGetTime();
 	}
 }

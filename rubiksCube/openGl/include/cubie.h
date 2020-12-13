@@ -13,20 +13,23 @@ class Cubie {
 
 private:
 	glm::vec3 localPosition;
+	glm::vec3 startPosition;
 	float x, y, z;
 	glm::mat4 modelMatrix = glm::mat4(1.0f);
+	glm::mat4 debugMatrix = glm::mat4(1.0f);
 
 public:
 	//Constructor
 	Cubie(glm::vec3 localMatrix, float x, float y, float z) {
-		this->localPosition = glm::vec3(x, y, z);
+		localPosition = glm::vec3(x, y, z);
+		startPosition = glm::vec3(x, y, z);
 		this->x = x;
 		this->y = y;
 		this->z = z;
 		modelMatrix = glm::translate(modelMatrix, localPosition);
 	}
 
-	void draw(Shader ourShader);
+	void draw(Shader* drawShader);
 
 	float getX() { return x; }
 

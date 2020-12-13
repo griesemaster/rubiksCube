@@ -198,13 +198,6 @@ int main()
         1.0f, 1.0f, 1.0f,
     };
 
-    //used to place the cubes in the environment
-    glm::vec3 cubePositions[] = {
-        glm::vec3(0.0f,  0.0f,  -4.0f),
-    };
-
-
-
     unsigned int vertexBuffer, colorBuffer, VAO;
     glGenBuffers(1, &vertexBuffer);  //generate buffer and array objects
     glGenBuffers(1, &colorBuffer);
@@ -278,7 +271,7 @@ int main()
     
 
         //draw the cube
-        cube.draw(ourShader);
+        cube.draw(&ourShader);
 
 
 
@@ -315,13 +308,8 @@ void processInput(GLFWwindow* window)
 
     //Y Face rotations key bindings
     if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
-      
-    if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
+        cube.rotateZClockwise(false);
 
-
-    //fun keybinds
-    if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS)
-        cube.reset();
 }
 
 

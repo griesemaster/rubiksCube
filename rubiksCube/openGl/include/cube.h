@@ -4,6 +4,7 @@
 #include<tgmath.h>
 #include<list>
 #include <GLFW/glfw3.h>
+#include <shader.h>
 
 #ifndef CUBE
 #define CUBE
@@ -12,8 +13,8 @@ class Cube {
 
 private:
 	std::list<Cubie> cubieList;
-	float lastCommandTime;
-	float commandDelay;
+	double lastCommandTime;
+	double commandDelay;
 	int cubeDimension;
 
 
@@ -26,14 +27,14 @@ public:
 
 	//setup/drawing methods
 	void generateCubies();
-	void draw(Shader ourShader);
+	void draw(Shader* ourShader);
 	void reset();
 
 	//Commands
 	bool checkValidCommand();
 
 	//Z Face Rotations
-	void rotateZzeroClockwise(bool automated);
+	void rotateZClockwise(bool automated);
 	void rotateZzeroCounterwise(bool automated);
 
 
