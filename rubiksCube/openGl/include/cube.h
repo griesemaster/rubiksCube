@@ -35,7 +35,7 @@ public:
 
 	//Z Face Rotations
 	void rotateZClockwise(bool automated);
-	void rotateZzeroCounterwise(bool automated);
+	void rotateZCounterwise(bool automated);
 
 
 };

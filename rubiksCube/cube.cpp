@@ -42,9 +42,23 @@ bool Cube::checkValidCommand() {
 void Cube::rotateZClockwise(bool automated) {
 	if (checkValidCommand()) {
 		for (Cubie& currentCubie : cubieList) {
-			currentCubie.rotate(50.0f, glm::vec3(0.5f, 1.0f, 0.0f));
+			if (currentCubie.getZ() == 0) {
+				currentCubie.rotate(-90.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+			}
 		}
-		std::cout << "Rotated Cubies" << std::endl;
+		std::cout << "Rotated Cubies -90Z" << std::endl;
+		lastCommandTime = glfwGetTime();
+	}
+}
+
+void Cube::rotateZCounterwise(bool automated) {
+	if (checkValidCommand()) {
+		for (Cubie& currentCubie : cubieList) {
+			if (currentCubie.getZ() == 0) {
+				currentCubie.rotate(90.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+			}
+		}
+		std::cout << "Rotated Cubies +90Z" << std::endl;
 		lastCommandTime = glfwGetTime();
 	}
 }
