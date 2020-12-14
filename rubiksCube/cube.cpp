@@ -19,11 +19,13 @@ void Cube::generateCubies() {
 	std::cout << "made cubies" << std::endl;
 }
 
-void Cube::draw(Shader* ourShader) {
-	for (Cubie currentCubie : cubieList) {
+void Cube::drawCubies(Shader* ourShader) {
+	for (Cubie& currentCubie : cubieList) {
 		currentCubie.draw(ourShader);
 	}
 }
+
+
 
 void Cube::reset() {
 

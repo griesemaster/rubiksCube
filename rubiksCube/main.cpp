@@ -89,7 +89,7 @@ int main()
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetScrollCallback(window, scroll_callback);
-
+    glLineWidth(5.0f);
 
     // build and compile our shader program
     // ------------------------------------
@@ -98,6 +98,7 @@ int main()
 
     //Vertex Data for a square with face made of two triangles 
     float cubeVerticies[] = {
+        //----------------- cube face infos
         -0.5f, -0.5f, -0.5f,
          0.5f, -0.5f, -0.5f,
          0.5f,  0.5f, -0.5f,
@@ -139,6 +140,37 @@ int main()
          0.5f,  0.5f,  0.5f,
         -0.5f,  0.5f,  0.5f,
         -0.5f,  0.5f, -0.5f,
+
+        //------------------- outline vertex infos
+        //X faces
+        -0.5f, -0.5f, -0.5f,
+         0.5f, -0.5f, -0.5f,
+        -0.5f, -0.5f,  0.5f, 
+         0.5f, -0.5f,  0.5f,
+        -0.5f,  0.5f, -0.5f,
+         0.5f,  0.5f, -0.5f,
+        -0.5f,  0.5f,  0.5f,
+         0.5f,  0.5f,  0.5f,
+
+        //Y faces
+        -0.5f, -0.5f,  0.5f,
+        -0.5f,  0.5f,  0.5f,
+        -0.5f, -0.5f, -0.5f,
+        -0.5f,  0.5f, -0.5f,
+         0.5f, -0.5f, -0.5f,
+         0.5f,  0.5f, -0.5f,
+         0.5f, -0.5f,  0.5f,
+         0.5f,  0.5f,  0.5f,
+
+        //Z faces
+        -0.5f, -0.5f, -0.5f,
+        -0.5f, -0.5f,  0.5f,
+        -0.5f,  0.5f, -0.5f,
+        -0.5f,  0.5f,  0.5f,
+         0.5f, -0.5f, -0.5f, 
+         0.5f, -0.5f,  0.5f,
+         0.5f,  0.5f, -0.5f,
+         0.5f,  0.5f,  0.5f
     };
 
     float colors[] = {
@@ -198,20 +230,21 @@ int main()
         1.0f, 1.0f, 1.0f,
     };
 
-    unsigned int vertexBuffer, colorBuffer, VAO;
-    glGenBuffers(1, &vertexBuffer);  //generate buffer and array objects
+    unsigned int cubeBuffer, colorBuffer, VAO;
+    glGenBuffers(1, &cubeBuffer);  //generate buffer and array objects
     glGenBuffers(1, &colorBuffer);
     glGenVertexArrays(1, &VAO);
 
 
     glBindVertexArray(VAO);     //bind to VAO to change it's contained data (VBO)
 
-    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer); //bind VBO as current buffer to edit
+    glBindBuffer(GL_ARRAY_BUFFER, cubeBuffer); //bind VBO as current buffer to edit
     glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVerticies), cubeVerticies, GL_DYNAMIC_DRAW);  //input vertex data into the vertex buffer
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);   //explain how to read the new data in buffer
     glEnableVertexAttribArray(0);   //enable the location attribute on current VAO - hence the array in func. call 
-    //enables color attribute
+   
 
+    //enables color attribute
     glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_DYNAMIC_DRAW);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
@@ -249,7 +282,7 @@ int main()
         glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
         glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_DYNAMIC_DRAW);
 
-        glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer); //bind VBO as current buffer to edit
+        glBindBuffer(GL_ARRAY_BUFFER, cubeBuffer); //bind VBO as current buffer to edit
         glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVerticies), cubeVerticies, GL_DYNAMIC_DRAW);  //input vertex data into the vertex buffer
 
 
@@ -271,7 +304,7 @@ int main()
     
 
         //draw the cube
-        cube.draw(&ourShader);
+        cube.drawCubies(&ourShader);
 
 
 

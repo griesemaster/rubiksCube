@@ -27,7 +27,7 @@ public:
 
 	//setup/drawing methods
 	void generateCubies();
-	void draw(Shader* ourShader);
+	void drawCubies(Shader* ourShader);
 	void reset();
 
 	//Commands
