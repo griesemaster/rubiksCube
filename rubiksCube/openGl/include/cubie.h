@@ -16,7 +16,6 @@ private:
 	glm::vec3 startPosition;
 	float x, y, z;
 	glm::mat4 modelMatrix = glm::mat4(1.0f);
-	glm::mat4 debugMatrix = glm::mat4(1.0f);
 
 public:
 	//Constructor
@@ -38,6 +37,8 @@ public:
 	float getZ() { return z; }
 
 	void rotate(float angle, glm::vec3 rotationAxis);
+
+	void translate(glm::vec3 direction);
 
 	void reset();
 

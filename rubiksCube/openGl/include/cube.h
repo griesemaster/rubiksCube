@@ -30,13 +30,14 @@ public:
 	void drawCubies(Shader* ourShader);
 	void reset();
 
-	//Commands
+	//Input Handling commands
 	bool checkValidCommand();
 
 	//Z Face Rotations
 	void rotateZClockwise(bool automated);
 	void rotateZCounterwise(bool automated);
-
+	void rotateXClockwise(bool automated);
+	void rotateXCounterwise(bool automated);
 
 };
 #endif

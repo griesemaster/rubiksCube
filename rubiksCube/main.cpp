@@ -194,22 +194,22 @@ int main()
 
 
         //left face
-        0.0f, 1.0f, 0.0f,
-        0.0f, 1.0f, 0.0f,
-        0.0f, 1.0f, 0.0f,
+        0.0f, 0.0f, 1.0f,
+        0.0f, 0.0f, 1.0f,
+        0.0f, 0.0f, 1.0f,
 
-        0.0f, 1.0f, 0.0f,
-        0.0f, 1.0f, 0.0f,
-        0.0f, 1.0f, 0.0f,
+        0.0f, 0.0f, 1.0f,
+        0.0f, 0.0f, 1.0f,
+        0.0f, 0.0f, 1.0f,
 
         //right face
-        0.0f, 0.0f, 1.0f,
-        0.0f, 0.0f, 1.0f,
-        0.0f, 0.0f, 1.0f,
+        0.0f, 1.0f, 0.0f,
+        0.0f, 1.0f, 0.0f,
+        0.0f, 1.0f, 0.0f,
 
-        0.0f, 0.0f, 1.0f,
-        0.0f, 0.0f, 1.0f,
-        0.0f, 0.0f, 1.0f,
+        0.0f, 1.0f, 0.0f,
+        0.0f, 1.0f, 0.0f,
+        0.0f, 1.0f, 0.0f,
 
         //bottom face
         1.0f, 1.0f, 0.0f,
@@ -344,7 +344,16 @@ void processInput(GLFWwindow* window)
         cube.rotateZClockwise(false);
     if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
         cube.rotateZCounterwise(false);
+    if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS)
+        cube.rotateXClockwise(false);
+    if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS)
+        cube.rotateXCounterwise(false);
+    if (glfwGetKey(window, GLFW_KEY_5) == GLFW_PRESS)
 
+
+
+    if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS)
+        cube.reset();
 }
 
 
