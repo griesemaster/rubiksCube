@@ -40,8 +40,6 @@ public:
 
 	void rotate(glm::mat4 nextRotation);
 
-	void translate(glm::vec3 direction);
-
 	void reset();
 
 	void setPos(glm::vec3 newPos) {
@@ -49,6 +47,7 @@ public:
 		this->y = newPos[1];
 		this->z = newPos[2];
 		localPosition = newPos;
+		translationMatrix = glm::translate(glm::mat4(1), newPos);
 	}
 
 

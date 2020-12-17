@@ -11,6 +11,7 @@
 #include <GLFW/glfw3.h>
 
 
+//creates the list of cubies. The bounds are set so that the center of the cube is on 0,0,0. 
 void Cube::generateCubies() {
 	for (float x = -cubeDimension/2; x <= cubeDimension/2; x++) {
 		for (float y = -cubeDimension / 2; y <= cubeDimension / 2; y++) {
@@ -22,13 +23,15 @@ void Cube::generateCubies() {
 	std::cout << "made cubies" << std::endl;
 }
 
+
+//draws each cubie
 void Cube::drawCubies(Shader* ourShader) {
 	for (Cubie& currentCubie : cubieList) {
 		currentCubie.draw(ourShader);
 	}
 }
 
-
+//resets each cubie to their starting orientation and position.
 void Cube::reset() {
 	if (checkValidCommand()) {
 		for (Cubie& currentCubie : cubieList) {
@@ -39,6 +42,7 @@ void Cube::reset() {
 	}
 }
 
+//checks if the cube is ready for a command yet. This should be called before any transformation that is user inputed to prevent rapid inputs. Controlled by "commandDelay" variable
 bool Cube::checkValidCommand() {
 	if (lastCommandTime + commandDelay < glfwGetTime()) {
 		return true;
@@ -49,8 +53,10 @@ bool Cube::checkValidCommand() {
 }
 
 
+//------------------- General methods that the other rotation methods rely on ---------------------
 
 
+//generates a rotation matrix based on a given rotation axis and angle (passed in radians). Used to generate the next roation for a given cubie.
 glm::mat4 Cube::generalRotation(glm::vec3 rotationAxis, float angle) {
 	//create w,x,y,z to define a quaterion
 	float w = cos(angle / 2);
@@ -63,6 +69,19 @@ glm::mat4 Cube::generalRotation(glm::vec3 rotationAxis, float angle) {
 	return newRotation;
 }
 
+//translates the cords passed around the cube in either clockwise or anticlockwise fashion. This is used to find the new location of a cubie after a rotation.
+glm::vec2 Cube::getNewCords(float x, float y, float rotationDir) {
+	//clockwise rotation
+	if (rotationDir == clockTurn) {
+		return glm::vec2(x * cos(clockTurn) - y * sin(clockTurn), x * sin(clockTurn) + y * cos(clockTurn));
+	}
+	//anticlockwise rotation
+	else if (rotationDir == antiClockTurn) {
+		return glm::vec2(x * cos(antiClockTurn) - y * sin(antiClockTurn), x * sin(antiClockTurn) + y * cos(antiClockTurn));
+	}
+}
+
+
 
 //------------------------ Z Face Moves -------------------------------------
 void Cube::rotateZClockwise(bool automated) {
@@ -71,6 +90,9 @@ void Cube::rotateZClockwise(bool automated) {
 			if (currentCubie.getZ() == cubeDimension / 2) {
 				glm::mat4 nextRotation = generalRotation(glm::vec3(0, 0, 1), clockTurn);
 				currentCubie.rotate(nextRotation);
+				glm::vec2 rotatedPoints = getNewCords(currentCubie.getX(), currentCubie.getY(), clockTurn);
+				glm::vec3 newLocation = glm::vec3(rotatedPoints[0], rotatedPoints[1], currentCubie.getZ());
+				currentCubie.setPos(newLocation);
 			}
 		}
 		std::cout << "Z clockwise 90" << std::endl;
@@ -84,6 +106,9 @@ void Cube::rotateZantiClockwise(bool automated) {
 			if (currentCubie.getZ() == cubeDimension / 2) {
 				glm::mat4 nextRotation = generalRotation(glm::vec3(0, 0, 1), antiClockTurn);
 				currentCubie.rotate(nextRotation);
+				glm::vec2 rotatedPoints = getNewCords(currentCubie.getX(), currentCubie.getY(), antiClockTurn);
+				glm::vec3 newLocation = glm::vec3(rotatedPoints[0], rotatedPoints[1], currentCubie.getZ());
+				currentCubie.setPos(newLocation);
 			}
 		}
 		std::cout << "Z Cclockwise 90" << std::endl;
@@ -98,6 +123,9 @@ void Cube::rotateXClockwise(bool automated) {
 			if (currentCubie.getX() == cubeDimension / 2) {
 				glm::mat4 nextRotation = generalRotation(glm::vec3(1, 0, 0), clockTurn);
 				currentCubie.rotate(nextRotation);
+				glm::vec2 rotatedPoints = getNewCords(currentCubie.getY(), currentCubie.getZ(), clockTurn);
+				glm::vec3 newLocation = glm::vec3(currentCubie.getX(), rotatedPoints[0], rotatedPoints[1]);
+				currentCubie.setPos(newLocation);
 			}
 		}
 		std::cout << "X clockwise 90" << std::endl;
@@ -111,7 +139,9 @@ void Cube::rotateXantiClockwise(bool automated) {
 			if (currentCubie.getX() == cubeDimension / 2) {
 				glm::mat4 nextRotation = generalRotation(glm::vec3(1, 0, 0), antiClockTurn);
 				currentCubie.rotate(nextRotation);
-
+				glm::vec2 rotatedPoints = getNewCords(currentCubie.getY(), currentCubie.getZ(), clockTurn);
+				glm::vec3 newLocation = glm::vec3(currentCubie.getX(), rotatedPoints[0], rotatedPoints[1]);
+				currentCubie.setPos(newLocation);
 			}
 		}
 		std::cout << "X Cclockwise 90" << std::endl;
@@ -126,6 +156,9 @@ void Cube::rotateYClockwise(bool automated) {
 			if (currentCubie.getY() == cubeDimension / 2) {
 				glm::mat4 nextRotation = generalRotation(glm::vec3(0, 1, 0), clockTurn);
 				currentCubie.rotate(nextRotation);
+				glm::vec2 rotatedPoints = getNewCords(currentCubie.getX(), currentCubie.getZ(), clockTurn);
+				glm::vec3 newLocation = glm::vec3(rotatedPoints[0], currentCubie.getY(), rotatedPoints[1]);
+				currentCubie.setPos(newLocation);
 			}
 		}
 		std::cout << "Y clockwise 90" << std::endl;
@@ -139,7 +172,9 @@ void Cube::rotateYantiClockwise(bool automated) {
 			if (currentCubie.getY() == cubeDimension / 2) {
 				glm::mat4 nextRotation = generalRotation(glm::vec3(0, 1, 0), antiClockTurn);
 				currentCubie.rotate(nextRotation);
-
+				glm::vec2 rotatedPoints = getNewCords(currentCubie.getX(), currentCubie.getZ(), clockTurn);
+				glm::vec3 newLocation = glm::vec3(rotatedPoints[0], currentCubie.getY(), rotatedPoints[1]);
+				currentCubie.setPos(newLocation);
 			}
 		}
 		std::cout << "Y Cclockwise 90" << std::endl;

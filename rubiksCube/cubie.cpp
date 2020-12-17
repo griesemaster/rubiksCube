@@ -23,11 +23,11 @@ void Cubie::rotate(glm::mat4 nextRotation) {
 	rotationMatrix = nextRotation * rotationMatrix;
 }
 
-void Cubie::translate(glm::vec3 direction) {
-	translationMatrix = glm::translate(translationMatrix, direction);
-}
 
 void Cubie::reset() {
 	rotationMatrix = glm::mat4(1.0f);
 	translationMatrix = glm::translate(glm::mat4(1.0f), startPosition);
+	x = startPosition[0];
+	y = startPosition[1];
+	z = startPosition[2];
 }

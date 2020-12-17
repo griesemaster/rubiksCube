@@ -20,6 +20,7 @@ private:
 	int cubeDimension;
 
 	glm::mat4 generalRotation(glm::vec3 rotationDirection, float angle);
+	glm::vec2 getNewCords(float x, float y, float rotationDir);
 
 public:
 	Cube(int dimension) {
