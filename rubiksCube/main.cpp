@@ -343,15 +343,15 @@ void processInput(GLFWwindow* window)
     if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
         cube.rotateZClockwise(false);
     if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
-        cube.rotateZCounterwise(false);
+        cube.rotateZantiClockwise(false);
     if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS)
         cube.rotateXClockwise(false);
     if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS)
-        cube.rotateXCounterwise(false);
+        cube.rotateXantiClockwise(false);
     if (glfwGetKey(window, GLFW_KEY_5) == GLFW_PRESS)
-
-
-
+        cube.rotateYClockwise(false);
+    if (glfwGetKey(window, GLFW_KEY_6) == GLFW_PRESS)
+        cube.rotateYantiClockwise(false);
     if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS)
         cube.reset();
 }

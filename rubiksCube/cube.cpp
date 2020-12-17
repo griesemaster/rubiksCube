@@ -1,6 +1,8 @@
 #include "cube.h"
 #include <glm/glm.hpp>
 #include<glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/quaternion.hpp>
 #include<cubie.h>
 #include<tgmath.h>
 #include<math.h>
@@ -46,75 +48,101 @@ bool Cube::checkValidCommand() {
 	}
 }
 
-//Z Face Rotations
+
+
+
+glm::mat4 Cube::generalRotation(glm::vec3 rotationAxis, float angle) {
+	//create w,x,y,z to define a quaterion
+	float w = cos(angle / 2);
+	float x = rotationAxis[0] * sin(angle / 2);
+	float y = rotationAxis[1] * sin(angle / 2);
+	float z = rotationAxis[2] * sin(angle / 2);
+	//construct the quat
+	glm::quat rotationQuat = glm::quat(w, x, y, z);
+	glm::mat4 newRotation = glm::toMat4(rotationQuat);
+	return newRotation;
+}
+
+
+//------------------------ Z Face Moves -------------------------------------
 void Cube::rotateZClockwise(bool automated) {
 	if (checkValidCommand()) {
 		for (Cubie& currentCubie : cubieList) {
 			if (currentCubie.getZ() == cubeDimension / 2) {
-				//calculate the desired final location in terms of x/y/z (Z) will be static for this test
-				constexpr float angle = glm::radians(-90.0f);
-				float newX = currentCubie.getX() * cos(angle) - currentCubie.getY() * sin(angle);
-				float newY = currentCubie.getX() * sin(angle) - currentCubie.getY() * cos(angle);
-
-				currentCubie.translate(glm::vec3(-currentCubie.getX(), -currentCubie.getY(), -currentCubie.getZ()));
-				currentCubie.rotate(90.0f, glm::vec3(0, 0, 1));
-				currentCubie.translate(glm::vec3(newX, newY, cubeDimension / 2));
+				glm::mat4 nextRotation = generalRotation(glm::vec3(0, 0, 1), clockTurn);
+				currentCubie.rotate(nextRotation);
 			}
 		}
+		std::cout << "Z clockwise 90" << std::endl;
 		lastCommandTime = glfwGetTime();
 	}
 }
 
-void Cube::rotateZCounterwise(bool automated) {
+void Cube::rotateZantiClockwise(bool automated) {
 	if (checkValidCommand()) {
 		for (Cubie& currentCubie : cubieList) {
 			if (currentCubie.getZ() == cubeDimension / 2) {
-				//calculate the desired final location in terms of x/y/z (Z) will be static for this test
-				constexpr float angle = glm::radians(90.0f);
-				float newX = currentCubie.getX() * cos(angle) - currentCubie.getY() * sin(angle);
-				float newY = currentCubie.getX() * sin(angle) - currentCubie.getY() * cos(angle);
-
-				currentCubie.translate(glm::vec3(-currentCubie.getX(), -currentCubie.getY(), -currentCubie.getZ()));
-				currentCubie.rotate(90.0f, glm::vec3(0, 0, 1));
-				currentCubie.translate(glm::vec3(newX, newY, cubeDimension / 2));
+				glm::mat4 nextRotation = generalRotation(glm::vec3(0, 0, 1), antiClockTurn);
+				currentCubie.rotate(nextRotation);
 			}
 		}
+		std::cout << "Z Cclockwise 90" << std::endl;
 		lastCommandTime = glfwGetTime();
 	}
 }
 
+//------------------------- X Face moves -----------------------------------
 void Cube::rotateXClockwise(bool automated) {
 	if (checkValidCommand()) {
 		for (Cubie& currentCubie : cubieList) {
 			if (currentCubie.getX() == cubeDimension / 2) {
-				//calculate the desired final location in terms of x/y/z (Z) will be static for this test
-				constexpr float angle = glm::radians(-90.0f);
-				float newY = currentCubie.getY() * cos(angle) - currentCubie.getZ() * sin(angle);
-				float newZ = currentCubie.getY() * sin(angle) - currentCubie.getZ() * cos(angle);
-
-				currentCubie.translate(glm::vec3(-currentCubie.getX(), -currentCubie.getY(), -currentCubie.getZ()));
-				currentCubie.rotate(90.0f, glm::vec3(1, 0, 0));
-				currentCubie.translate(glm::vec3(cubeDimension/2, newY, newZ));
+				glm::mat4 nextRotation = generalRotation(glm::vec3(1, 0, 0), clockTurn);
+				currentCubie.rotate(nextRotation);
 			}
 		}
+		std::cout << "X clockwise 90" << std::endl;
 		lastCommandTime = glfwGetTime();
 	}
-};
+}
 
-void Cube::rotateXCounterwise(bool automated) {
+void Cube::rotateXantiClockwise(bool automated) {
 	if (checkValidCommand()) {
 		for (Cubie& currentCubie : cubieList) {
 			if (currentCubie.getX() == cubeDimension / 2) {
-				//calculate the desired final location in terms of x/y/z (Z) will be static for this test
-				constexpr float angle = glm::radians(90.0f);
-				float newY = currentCubie.getY() * cos(angle) - currentCubie.getZ() * sin(angle);
-				float newZ = currentCubie.getY() * sin(angle) - currentCubie.getZ() * cos(angle);
+				glm::mat4 nextRotation = generalRotation(glm::vec3(1, 0, 0), antiClockTurn);
+				currentCubie.rotate(nextRotation);
 
-				currentCubie.translate(glm::vec3(-currentCubie.getX(), -currentCubie.getY(), -currentCubie.getZ()));
-				currentCubie.rotate(90.0f, glm::vec3(1, 0, 0));
-				currentCubie.translate(glm::vec3(cubeDimension / 2, newY, newZ));
 			}
 		}
+		std::cout << "X Cclockwise 90" << std::endl;
+		lastCommandTime = glfwGetTime();
+	}
+}
+
+//--------------------- Y Face moves --------------------------------------
+void Cube::rotateYClockwise(bool automated) {
+	if (checkValidCommand()) {
+		for (Cubie& currentCubie : cubieList) {
+			if (currentCubie.getY() == cubeDimension / 2) {
+				glm::mat4 nextRotation = generalRotation(glm::vec3(0, 1, 0), clockTurn);
+				currentCubie.rotate(nextRotation);
+			}
+		}
+		std::cout << "Y clockwise 90" << std::endl;
+		lastCommandTime = glfwGetTime();
+	}
+}
+
+void Cube::rotateYantiClockwise(bool automated) {
+	if (checkValidCommand()) {
+		for (Cubie& currentCubie : cubieList) {
+			if (currentCubie.getY() == cubeDimension / 2) {
+				glm::mat4 nextRotation = generalRotation(glm::vec3(0, 1, 0), antiClockTurn);
+				currentCubie.rotate(nextRotation);
+
+			}
+		}
+		std::cout << "Y Cclockwise 90" << std::endl;
 		lastCommandTime = glfwGetTime();
 	}
 };

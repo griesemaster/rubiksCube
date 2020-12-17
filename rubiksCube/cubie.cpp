@@ -11,6 +11,7 @@
 
 
 void Cubie::draw(Shader* shader) {
+	glm::mat4 modelMatrix = translationMatrix * rotationMatrix;
 	(*shader).setMat4("model", modelMatrix);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glDrawArrays(GL_LINES, 36, 24);
@@ -18,15 +19,15 @@ void Cubie::draw(Shader* shader) {
 }
 
 
-void Cubie::rotate(float angle, glm::vec3 rotationAxis) {
-	modelMatrix = glm::rotate(modelMatrix, glm::radians(angle), rotationAxis);
+void Cubie::rotate(glm::mat4 nextRotation) {
+	rotationMatrix = nextRotation * rotationMatrix;
 }
 
 void Cubie::translate(glm::vec3 direction) {
-	modelMatrix = glm::translate(modelMatrix, direction);
+	translationMatrix = glm::translate(translationMatrix, direction);
 }
 
 void Cubie::reset() {
-	modelMatrix = glm::mat4(1.0f);
-	modelMatrix = glm::translate(modelMatrix, startPosition);
+	rotationMatrix = glm::mat4(1.0f);
+	translationMatrix = glm::translate(glm::mat4(1.0f), startPosition);
 }

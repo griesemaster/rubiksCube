@@ -12,11 +12,14 @@
 class Cube {
 
 private:
+	const float clockTurn = 180.0f;
+	const float antiClockTurn = 180.0f;
 	std::list<Cubie> cubieList;
 	double lastCommandTime;
 	double commandDelay;
 	int cubeDimension;
 
+	glm::mat4 generalRotation(glm::vec3 rotationDirection, float angle);
 
 public:
 	Cube(int dimension) {
@@ -33,11 +36,12 @@ public:
 	//Input Handling commands
 	bool checkValidCommand();
 
-	//Z Face Rotations
+	//Face Rotations
 	void rotateZClockwise(bool automated);
-	void rotateZCounterwise(bool automated);
+	void rotateZantiClockwise(bool automated);
 	void rotateXClockwise(bool automated);
-	void rotateXCounterwise(bool automated);
-
+	void rotateXantiClockwise(bool automated);
+	void rotateYClockwise(bool automated);
+	void rotateYantiClockwise(bool automated);
 };
 #endif

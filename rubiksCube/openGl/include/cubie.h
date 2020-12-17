@@ -12,10 +12,12 @@
 class Cubie {
 
 private:
+
 	glm::vec3 localPosition;
 	glm::vec3 startPosition;
 	float x, y, z;
-	glm::mat4 modelMatrix = glm::mat4(1.0f);
+	glm::mat4 rotationMatrix = glm::mat4(1.0f);
+	glm::mat4 translationMatrix = glm::mat4(1.0f);
 
 public:
 	//Constructor
@@ -25,7 +27,7 @@ public:
 		this->x = x;
 		this->y = y;
 		this->z = z;
-		modelMatrix = glm::translate(modelMatrix, localPosition);
+		translationMatrix = glm::translate(translationMatrix, localPosition);
 	}
 
 	void draw(Shader* drawShader);
@@ -36,7 +38,7 @@ public:
 
 	float getZ() { return z; }
 
-	void rotate(float angle, glm::vec3 rotationAxis);
+	void rotate(glm::mat4 nextRotation);
 
 	void translate(glm::vec3 direction);
 
@@ -49,9 +51,9 @@ public:
 		localPosition = newPos;
 	}
 
-	void setModel(glm::mat4 newModel) { modelMatrix = newModel; }
 
-	glm::mat4 getModel() { return modelMatrix; }
+	glm::mat4 getRotation() { return rotationMatrix; }
+	glm::mat4 getTranslation() { return translationMatrix; }
 };
 
 #endif
