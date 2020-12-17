@@ -12,8 +12,8 @@
 class Cube {
 
 private:
-	const float clockTurn = 180.0f;
-	const float antiClockTurn = 180.0f;
+	const float clockTurn = glm::radians(90.0f);
+	const float antiClockTurn = glm::radians(90.0f);
 	std::list<Cubie> cubieList;
 	double lastCommandTime;
 	double commandDelay;
