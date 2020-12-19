@@ -25,7 +25,7 @@ private:
 public:
 	Cube(int dimension) {
 		lastCommandTime = glfwGetTime();
-		commandDelay = 0.1f;
+		commandDelay = 0.2f;
 		cubeDimension = dimension;
 	}
 
@@ -38,12 +38,22 @@ public:
 	//Input Handling commands
 	bool checkValidCommand();
 
-	//Face Rotations
-	void rotateZClockwise(bool automated);
-	void rotateZantiClockwise(bool automated);
-	void rotateXClockwise(bool automated);
-	void rotateXantiClockwise(bool automated);
-	void rotateYClockwise(bool automated);
-	void rotateYantiClockwise(bool automated);
+	//Z Face Rotations
+	void rotateZClockwiseFront(bool automated);
+	void rotateZantiClockwiseFront(bool automated);
+	void rotateZClockwiseBack(bool automated);
+	void rotateZantiClockwiseBack(bool automated);
+
+	//X Face Rotations
+	void rotateXClockwiseFront(bool automated);
+	void rotateXantiClockwiseFront(bool automated);
+	void rotateXClockwiseBack(bool automated);
+	void rotateXantiClockwiseBack(bool automated);
+
+	//Y Face Rotations
+	void rotateYClockwiseFront(bool automated);
+	void rotateYantiClockwiseFront(bool automated);
+	void rotateYClockwiseBack(bool automated);
+	void rotateYantiClockwiseBack(bool automated);
 };
 #endif

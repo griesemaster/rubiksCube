@@ -143,6 +143,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="cube.cpp" />
+    <ClCompile Include="cubetroller.cpp" />
     <ClCompile Include="cubie.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="openGl\src\glad.c" />

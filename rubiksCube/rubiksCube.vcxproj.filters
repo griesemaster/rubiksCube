@@ -27,5 +27,8 @@
     <ClCompile Include="cubie.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="cubetroller.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

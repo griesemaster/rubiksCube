@@ -9,6 +9,7 @@
 #include <shader.h>
 #include <cubie.h>
 #include <cube.h>
+#include <cubetroller.h>
 
 #include <iostream>
 #include <filesystem>
@@ -27,6 +28,8 @@ unsigned int SCR_HEIGHT = 900;
 // create cube object
 float dimension = 3.0f;
 Cube cube = Cube(dimension);
+Cubetroller cubetroller = Cubetroller();
+
 
 // camera setup
 // ------------------------------------
@@ -254,6 +257,7 @@ int main()
     glBindVertexArray(0);
 
     cube.generateCubies();
+    cubetroller.setCube(&cube);
 
 
     // render loop
@@ -341,19 +345,19 @@ void processInput(GLFWwindow* window)
 
     //Y Face rotations key bindings
     if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
-        cube.rotateZClockwise(false);
+        cubetroller.F(false);
     if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
-        cube.rotateZantiClockwise(false);
+        cubetroller.Fp(false);
     if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS)
-        cube.rotateXClockwise(false);
+        cubetroller.U(false);
     if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS)
-        cube.rotateXantiClockwise(false);
+        cubetroller.Up(false);
     if (glfwGetKey(window, GLFW_KEY_5) == GLFW_PRESS)
-        cube.rotateYClockwise(false);
+        cubetroller.R(false);
     if (glfwGetKey(window, GLFW_KEY_6) == GLFW_PRESS)
-        cube.rotateYantiClockwise(false);
+        cubetroller.Rp(false);
     if (glfwGetKey(window, GLFW_KEY_9) == GLFW_PRESS)
-        cube.triggerBreakpoint();
+        cubetroller.superFlip();
     if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS)
         cube.reset();
 }
