@@ -12,20 +12,20 @@
 class Cube {
 
 private:
-	const float clockTurn = glm::radians(90.0f);
+	const float clockTurn = glm::radians(-90.0f); //idk bro seems right when you do the math
 	const float antiClockTurn = glm::radians(90.0f);
 	std::list<Cubie> cubieList;
 	double lastCommandTime;
 	double commandDelay;
 	int cubeDimension;
 
-	glm::mat4 generalRotation(glm::vec3 rotationDirection, float angle);
+	glm::mat4 generateQuatRotation(glm::vec3 rotationDirection, float angle);
 	glm::vec2 getNewCords(float x, float y, float rotationDir);
 
 public:
 	Cube(int dimension) {
 		lastCommandTime = glfwGetTime();
-		commandDelay = 0.3f;
+		commandDelay = 0.1f;
 		cubeDimension = dimension;
 	}
 
@@ -33,6 +33,7 @@ public:
 	void generateCubies();
 	void drawCubies(Shader* ourShader);
 	void reset();
+	void triggerBreakpoint();
 
 	//Input Handling commands
 	bool checkValidCommand();

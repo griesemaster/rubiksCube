@@ -27,7 +27,7 @@ void Cubie::rotate(glm::mat4 nextRotation) {
 void Cubie::reset() {
 	rotationMatrix = glm::mat4(1.0f);
 	translationMatrix = glm::translate(glm::mat4(1.0f), startPosition);
-	x = startPosition[0];
-	y = startPosition[1];
-	z = startPosition[2];
+	x = (int) startPosition[0];
+	y = (int) startPosition[1];
+	z = (int) startPosition[2];
 }

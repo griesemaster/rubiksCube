@@ -352,6 +352,8 @@ void processInput(GLFWwindow* window)
         cube.rotateYClockwise(false);
     if (glfwGetKey(window, GLFW_KEY_6) == GLFW_PRESS)
         cube.rotateYantiClockwise(false);
+    if (glfwGetKey(window, GLFW_KEY_9) == GLFW_PRESS)
+        cube.triggerBreakpoint();
     if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS)
         cube.reset();
 }

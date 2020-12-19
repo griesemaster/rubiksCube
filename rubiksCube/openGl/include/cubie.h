@@ -15,7 +15,7 @@ private:
 
 	glm::vec3 localPosition;
 	glm::vec3 startPosition;
-	float x, y, z;
+	int  x, y, z;
 	glm::mat4 rotationMatrix = glm::mat4(1.0f);
 	glm::mat4 translationMatrix = glm::mat4(1.0f);
 
