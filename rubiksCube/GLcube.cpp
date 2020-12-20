@@ -104,9 +104,9 @@ void Cube::rotateZantiClockwiseFront(bool automated) {
 	if (checkValidCommand() || automated) {
 		for (Cubie& currentCubie : cubieList) {
 			if (currentCubie.getZ() == (cubeDimension / 2)) {
-				glm::mat4 nextRotation = generateQuatRotation(glm::vec3(0, 0, 1), antiClockTurn);
+				glm::mat4 nextRotation = generateQuatRotation(glm::vec3(0, 0, 1));
 				currentCubie.rotate(nextRotation);
-				glm::vec2 rotatedPoints = getNewCords(currentCubie.getX(), currentCubie.getY(), antiClockTurn);
+				glm::vec2 rotatedPoints = getNewCords(currentCubie.getX(), currentCubie.getY());
 				glm::vec3 newLocation = glm::vec3(rotatedPoints[0], rotatedPoints[1], currentCubie.getZ());
 				currentCubie.setPos(newLocation);
 			}
