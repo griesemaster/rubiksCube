@@ -1,10 +1,10 @@
-#include "cube.h"
+#include "GLcube.h"
 #include <glm/glm.hpp>
 #include<glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 #include<cubie.h>
-#include<tgmath.h>
+#include<ctgmath>
 #include<math.h>
 #include <shader.h>
 #include<list>
@@ -74,16 +74,9 @@ glm::mat4 Cube::generateQuatRotation(glm::vec3 rotationAxis, float angle) {
 	return newRotation;
 }
 
-//translates the cords passed around the cube in either clockwise or anticlockwise fashion. This is used to find the new location of a cubie after a rotation.
+//translates the cords passed around the cube. This is used to find the new location of a cubie after a rotation.
 glm::vec2 Cube::getNewCords(float x, float y, float rotationDir) {
-	//clockwise rotation
-	if (rotationDir == clockTurn) {
-		return glm::vec2(round(x * cos(clockTurn) - y * sin(clockTurn)), round(x * sin(clockTurn) + y * cos(clockTurn)));
-	}
-	//anticlockwise rotation
-	else if (rotationDir == antiClockTurn) {
-		return glm::vec2(round(x * cos(antiClockTurn) - y * sin(antiClockTurn)), round(x * sin(antiClockTurn) + y * cos(antiClockTurn)));
-	}
+	return glm::vec2(round(x * cos(rotationDir) - y * sin(rotationDir)), round(x * sin(rotationDir) + y * cos(rotationDir)));
 }
 
 

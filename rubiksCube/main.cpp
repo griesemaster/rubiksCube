@@ -8,7 +8,7 @@
 
 #include <shader.h>
 #include <cubie.h>
-#include <cube.h>
+#include <GLcube.h>
 #include <cubetroller.h>
 
 #include <iostream>

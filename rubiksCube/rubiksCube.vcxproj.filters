@@ -21,13 +21,13 @@
     <ClCompile Include="openGl\src\glad.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="cube.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="cubie.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="cubetroller.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GLcube.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,4 +1,4 @@
-#include <cube.h>
+#include <GLcube.h>
 
 #ifndef CUBETROLLER
 #define CUBETROLLER
@@ -8,7 +8,7 @@ private:
 	Cube* currentCube;
 
 public:
-	Cubetroller() { };
+	Cubetroller() { currentCube = NULL; };
 
 	void setCube(Cube* newCube) { currentCube = newCube; };
 

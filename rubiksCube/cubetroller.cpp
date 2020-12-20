@@ -1,6 +1,6 @@
 #include "cubetroller.h"
-#include <cube.h>
-
+#include <GLcube.h>
+ 
 void Cubetroller::F(bool automated) {
 	(*currentCube).rotateZClockwiseFront(automated);
 }

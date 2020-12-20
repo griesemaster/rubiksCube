@@ -15,7 +15,7 @@ private:
 
 	glm::vec3 localPosition;
 	glm::vec3 startPosition;
-	int  x, y, z;
+	float  x, y, z;
 	glm::mat4 rotationMatrix = glm::mat4(1.0f);
 	glm::mat4 translationMatrix = glm::mat4(1.0f);
 
@@ -43,9 +43,9 @@ public:
 	void reset();
 
 	void setPos(glm::vec3 newPos) {
-		this->x = newPos[0];
-		this->y = newPos[1];
-		this->z = newPos[2];
+		this->x = (int) newPos[0];
+		this->y = (int) newPos[1];
+		this->z = (int) newPos[2];
 		localPosition = newPos;
 		translationMatrix = glm::translate(glm::mat4(1), newPos);
 	}
