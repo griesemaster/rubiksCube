@@ -19,6 +19,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow* window);
+void showFPS(GLFWwindow* window);
 
 // settings
 unsigned int SCR_WIDTH = 900;
@@ -53,7 +54,8 @@ float lastX = SCR_WIDTH / 2, lastY = SCR_HEIGHT / 2;
 //timing 
 float lastFrame = 0.0f;
 float deltaTime = 0.0f;
-
+double FPSlastTime = glfwGetTime();
+int frameCount = 0;
 
 
 int main()
@@ -68,6 +70,8 @@ int main()
 
     // glfw window creation
     // --------------------
+   
+
     GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Rubik's Cube Simulator", NULL, NULL);
     if (window == NULL)
     {
@@ -265,11 +269,6 @@ int main()
 
     while (!glfwWindowShouldClose(window))
     {
-        //timing tracking
-        float currentFrame = glfwGetTime();
-        deltaTime = currentFrame - lastFrame;
-        lastFrame = currentFrame;
-
 
         // input
         // -----
@@ -310,7 +309,8 @@ int main()
         //draw the cube
         cube.drawCubies(&ourShader);
 
-
+        //display FPS
+        showFPS(window);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
@@ -342,6 +342,8 @@ void processInput(GLFWwindow* window)
         cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+    if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+        cube.triggerBreakpoint();
 
     //Y Face rotations key bindings
     if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
@@ -413,4 +415,25 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
         fov = 1.0f;
     if (fov > 45.0f)
         fov = 45.0f;
+}
+
+void showFPS(GLFWwindow* pWindow)
+{
+    // Measure speed
+    double currentTime = glfwGetTime();
+    double delta = currentTime - FPSlastTime;
+    frameCount++;
+    if (delta >= 1.0) { // If last cout was more than 1 sec ago
+
+        double fps = double(frameCount) / delta;
+        double tpf = 1000.0 / double(frameCount);
+
+        std::stringstream ss;
+        ss << "RubiSim" << " " << "V1.0-beta" << " [" << fps << " FPS" << " " << tpf << "ms Per Frame]";
+
+        glfwSetWindowTitle(pWindow, ss.str().c_str());
+
+        frameCount = 0;
+        FPSlastTime = currentTime;
+    }
 }

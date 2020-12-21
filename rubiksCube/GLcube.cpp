@@ -74,6 +74,18 @@ glm::mat4 Cube::generateQuatRotation(glm::vec3 rotationAxis, float angle) {
 	return newRotation;
 }
 
+glm::quat Cube::genQuat(glm::vec3 rotationAxis, float angle) {
+	//create w,x,y,z to define a quaterion
+	float w = cos(angle / 2);
+	float x = rotationAxis[0] * sin(angle / 2);
+	float y = rotationAxis[1] * sin(angle / 2);
+	float z = rotationAxis[2] * sin(angle / 2);
+	//construct the quat
+	glm::quat rotationQuat = glm::quat(w, x, y, z);
+	return rotationQuat;
+}
+
+
 //translates the cords passed around the cube. This is used to find the new location of a cubie after a rotation.
 glm::vec2 Cube::getNewCords(float x, float y, float rotationDir) {
 	return glm::vec2(round(x * cos(rotationDir) - y * sin(rotationDir)), round(x * sin(rotationDir) + y * cos(rotationDir)));
@@ -87,8 +99,13 @@ void Cube::rotateZClockwiseFront(bool automated) {
 	if (checkValidCommand() || automated) {
 		for (Cubie& currentCubie : cubieList) {
 			if (currentCubie.getZ() == (cubeDimension / 2)) {
-				glm::mat4 nextRotation = generateQuatRotation(glm::vec3(0, 0, 1), clockTurn);
-				currentCubie.rotate(nextRotation);
+				glm::quat nextRotation = genQuat(glm::vec3(0, 0, 1), clockTurn);
+				glm::quat currentRotation = currentCubie.getRawRotation();
+		
+				//glm::quat intermediateFrame = glm::slerp(currentRotation, nextRotation, 1.0f);
+				currentCubie.addRotation(nextRotation);
+
+				currentCubie.addRawRotation(nextRotation);
 				glm::vec2 rotatedPoints = getNewCords(currentCubie.getX(), currentCubie.getY(), clockTurn);
 				glm::vec3 newLocation = glm::vec3(rotatedPoints[0], rotatedPoints[1], currentCubie.getZ());
 				currentCubie.setPos(newLocation);

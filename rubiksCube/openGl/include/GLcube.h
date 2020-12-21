@@ -20,6 +20,7 @@ private:
 	int cubeDimension;
 
 	glm::mat4 generateQuatRotation(glm::vec3 rotationDirection, float angle);
+	glm::quat genQuat(glm::vec3 rotationDirection, float angle);
 	glm::vec2 getNewCords(float x, float y, float rotationDir);
 
 public:
