@@ -95,7 +95,7 @@ glm::vec2 Cube::getNewCords(float x, float y, float rotationDir) {
 
 //------------------------ Z Face Moves -------------------------------------
 /// hotkey 1
-void Cube::rotateZClockwiseFront(bool automated) {
+void Cube::rotateZClockwiseFrontQUATSTACK(bool automated) {
 	if (checkValidCommand() || automated) {
 		for (Cubie& currentCubie : cubieList) {
 			if (currentCubie.getZ() == (cubeDimension / 2)) {
@@ -112,6 +112,22 @@ void Cube::rotateZClockwiseFront(bool automated) {
 			}
 		}
 		std::cout << "Z clockwise 90" << std::endl;
+		lastCommandTime = glfwGetTime();
+	}
+}
+
+void Cube::rotateZClockwiseFront(bool automated) {
+	if (checkValidCommand() || automated) {
+		for (Cubie& currentCubie : cubieList) {
+			if (currentCubie.getZ() == (cubeDimension / 2)) {
+				glm::mat4 nextRotation = generateQuatRotation(glm::vec3(0, 0, 1), clockTurn);
+				currentCubie.rotate(nextRotation);
+				glm::vec2 rotatedPoints = getNewCords(currentCubie.getX(), currentCubie.getY(), clockTurn);
+				glm::vec3 newLocation = glm::vec3(rotatedPoints[0], rotatedPoints[1], currentCubie.getZ());
+				currentCubie.setPos(newLocation);
+			}
+		}
+		std::cout << "Z antiClockwise 90" << std::endl;
 		lastCommandTime = glfwGetTime();
 	}
 }

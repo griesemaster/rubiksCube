@@ -40,6 +40,7 @@ public:
 	bool checkValidCommand();
 
 	//Z Face Rotations
+	void rotateZClockwiseFrontQUATSTACK(bool automated); ///DEV USE ONLY REMOVE LATER
 	void rotateZClockwiseFront(bool automated);
 	void rotateZantiClockwiseFront(bool automated);
 	void rotateZClockwiseBack(bool automated);

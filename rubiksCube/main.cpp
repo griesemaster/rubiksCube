@@ -277,7 +277,8 @@ int main()
         // render
         // ------
         //clear buffers
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        //glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClearColor(0.066f, 0.101f, 0.13f, 0.25f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         //bind the generated buffers after clearing
@@ -377,34 +378,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
-
-    if (firstMouse) {   //prevents large jump/jitter on first movement
-        lastX = xpos;
-        lastY = ypos;
-        firstMouse = false;
-
-    }
-
-    float deltaX = xpos - lastX;
-    float deltaY = lastY - ypos;
-    lastX = xpos;
-    lastY = ypos;
-
-    const float senstivity = 0.1f;
-    deltaX *= senstivity;
-    deltaY *= senstivity;
-
-    yaw += deltaX;
-    pitch += deltaY;
-
-    if (pitch > 89.0f) { pitch = 89.0f; };  //prevent flipping when looking at extreme angles (this code causes gimbal lock but cannot be avoided)
-    if (pitch < -89.0f) { pitch = -89.0f; };
-
-    glm::vec3 direction;
-    direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-    direction.y = sin(glm::radians(pitch));
-    direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-    cameraFront = glm::normalize(direction);
+    ;
 }
 // glfw: whenever the mouse scroll wheel scrolls, this callback is called
 // ----------------------------------------------------------------------
