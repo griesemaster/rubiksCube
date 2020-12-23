@@ -18,6 +18,7 @@
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 void processInput(GLFWwindow* window);
 void showFPS(GLFWwindow* window);
 
@@ -35,20 +36,22 @@ Cubetroller cubetroller = Cubetroller();
 // camera setup
 // ------------------------------------
 // camera is done after the cube declariation so that the cube can be centered in the frame (starts from 0,0 and goes to +dim, +dim)
-glm::vec3 cameraPos = glm::vec3(dimension * 2, dimension * 2, dimension * 2);
-glm::vec3 cameraFront = glm::vec3(-1.0f, -1.0f, -1.0f);
-glm::vec3 cameraTarget = glm::vec3(dimension, dimension, dimension);
+// the "eye" location
+glm::vec3 cameraPos = glm::vec3(dimension * 2.25f, dimension * 2.25f, dimension * 2.25f);
+float cameraRadius = glm::length(cameraPos);
+bool cameraShouldMove = false;
+//the "eye" direction initally 
+glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f); //camera should always look at the origin (center of the cube)
 glm::vec3 cameraDirection = glm::normalize(cameraPos - cameraTarget);
-glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
-bool firstMouse = true;
-float yaw = -90.0f;
-float pitch = 0.0f;
-float fov = 45.0f;
+// "up" relative to the world (positive Y)
+glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+glm::mat4 view = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+
+
+
 //mouse cords (starts in the center)
 float lastX = SCR_WIDTH / 2, lastY = SCR_HEIGHT / 2;
-
-
 
 
 //timing 
@@ -93,9 +96,10 @@ int main()
 
     //set one time enables for openGL
     glEnable(GL_DEPTH_TEST);
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetScrollCallback(window, scroll_callback);
+    glfwSetMouseButtonCallback(window, mouse_button_callback);
     glLineWidth(5.0f);
 
     // build and compile our shader program
@@ -263,6 +267,7 @@ int main()
     cube.generateCubies();
     cubetroller.setCube(&cube);
 
+    
 
     // render loop
     // -----------
@@ -296,13 +301,13 @@ int main()
         // activate shader
         ourShader.use();
 
-        // create transformations
-        glm::mat4 view = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+        // world matricies
         glm::mat4 projection = glm::mat4(1.0f);
         projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
         //FOV -             Aspect Ratio -      Near Distance - Far Distance
         ourShader.setMat4("projection", projection);
-        view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+        //set direction of camera
+        view = glm::lookAt(cameraPos, cameraDirection, cameraUp);
         ourShader.setMat4("view", view);
 
     
@@ -334,17 +339,12 @@ void processInput(GLFWwindow* window)
         glfwSetWindowShouldClose(window, true);
 
     //camera controls
-    const float cameraSpeed = 2.5f * deltaTime;
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        cameraPos += cameraSpeed * cameraFront;
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        cameraPos -= cameraSpeed * cameraFront;
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
     if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
         cube.triggerBreakpoint();
+
+
+    if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
+        cube.rotateZClockwiseFrontQUATSTACK(false);
 
     //Y Face rotations key bindings
     if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
@@ -378,19 +378,40 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
-    ;
+    if (cameraShouldMove) {
+        float deltaX = xpos - lastX;
+        float deltaY = lastY - ypos;
+        lastX = xpos;
+        lastY = ypos;
+
+        const float senstivity = 0.1f;
+        deltaX *= senstivity;
+        deltaY *= senstivity;
+
+        glm::vec2 dragDirection = glm::vec2(deltaX, deltaY);
+        std::cout << dragDirection[0] << " " << dragDirection[1] << std::endl;
+    }  
 }
+//glfw : function is triggered on mouse click
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+        cameraShouldMove = true;
+    }
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
+        cameraShouldMove = false;
+    }
+}
+
+
+
 // glfw: whenever the mouse scroll wheel scrolls, this callback is called
 // ----------------------------------------------------------------------
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-    fov -= (float)yoffset;
-    if (fov < 1.0f)
-        fov = 1.0f;
-    if (fov > 45.0f)
-        fov = 45.0f;
+    ;//does nothing
 }
 
+// draws the current FPS and time per frame in the window title
 void showFPS(GLFWwindow* pWindow)
 {
     // Measure speed

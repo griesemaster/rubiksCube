@@ -16,8 +16,9 @@
 void Cubie::draw(Shader* shader) {
 	
 	if (!rotationList.empty()) {//if there is a rotation to apply, then apply one before drawing
-		rotate(glm::toMat4(rotationList.front()));
-		rotationList.pop_front();	//rotate then remove one 
+		auto iter = rotationList.begin();
+		rotate(glm::toMat4(*iter));
+		rotationList.pop_front();
 	}
 	
 	glm::mat4 modelMatrix = translationMatrix * rotationMatrix;

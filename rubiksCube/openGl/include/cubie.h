@@ -64,7 +64,7 @@ public:
 
 	void addRawRotation(glm::quat newRotation) { rawRotation = newRotation * rawRotation; }
 
-	void addRotation(glm::quat newRotation) { rotationList.emplace_back(newRotation); }
+	void addIntermdiateFrame(glm::quat newRotation) { rotationList.emplace_back(newRotation); }
 
 	glm::mat4 getTranslation() { return translationMatrix; }
 };

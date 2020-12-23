@@ -102,8 +102,13 @@ void Cube::rotateZClockwiseFrontQUATSTACK(bool automated) {
 				glm::quat nextRotation = genQuat(glm::vec3(0, 0, 1), clockTurn);
 				glm::quat currentRotation = currentCubie.getRawRotation();
 		
-				//glm::quat intermediateFrame = glm::slerp(currentRotation, nextRotation, 1.0f);
-				currentCubie.addRotation(nextRotation);
+				
+		
+				for (float i = 1; i <= 15; i++) {
+					glm::quat intermediateFrame = glm::slerp(currentRotation, nextRotation, 0.0666f * i);
+					currentCubie.addIntermdiateFrame(intermediateFrame);
+				}
+				
 
 				currentCubie.addRawRotation(nextRotation);
 				glm::vec2 rotatedPoints = getNewCords(currentCubie.getX(), currentCubie.getY(), clockTurn);
@@ -111,7 +116,7 @@ void Cube::rotateZClockwiseFrontQUATSTACK(bool automated) {
 				currentCubie.setPos(newLocation);
 			}
 		}
-		std::cout << "Z clockwise 90" << std::endl;
+		std::cout << "Z SLERP clockwise 90" << std::endl;
 		lastCommandTime = glfwGetTime();
 	}
 }
