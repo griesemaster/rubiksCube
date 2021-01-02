@@ -5,14 +5,21 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 #include <shader.h>
 #include <cubie.h>
 #include <GLcube.h>
 #include <cubetroller.h>
+#include <camera.h>
 
 #include <iostream>
 #include <filesystem>
+
+//pi constant because math imports being fucky
+constexpr auto M_PI = 3.14159265358979323846;
+
 
 // function prototypes
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -23,8 +30,8 @@ void processInput(GLFWwindow* window);
 void showFPS(GLFWwindow* window);
 
 // settings
-unsigned int SCR_WIDTH = 900;
-unsigned int SCR_HEIGHT = 900;
+unsigned int screenWidth = 900;
+unsigned int screenHeight = 900;
 
 
 // create cube object
@@ -37,22 +44,18 @@ Cubetroller cubetroller = Cubetroller();
 // ------------------------------------
 // camera is done after the cube declariation so that the cube can be centered in the frame (starts from 0,0 and goes to +dim, +dim)
 // the "eye" location
-glm::vec3 cameraPos = glm::vec3(dimension * 2.25f, dimension * 2.25f, dimension * 2.25f);
-float cameraRadius = glm::length(cameraPos);
-bool cameraShouldMove = false;
-//the "eye" direction initally 
-glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f); //camera should always look at the origin (center of the cube)
-glm::vec3 cameraDirection = glm::normalize(cameraPos - cameraTarget);
-
+glm::vec3 cameraPos_INIT = glm::vec3(dimension * 2.25f, dimension * 2.25f, dimension * 2.25f);
+//the target to look at 
+glm::vec3 cameraTarget_INIT = glm::vec3(0.0f, 0.0f, 0.0f); //camera should always look at the origin (center of the cube)
 // "up" relative to the world (positive Y)
-glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
-glm::mat4 view = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+glm::vec3 cameraUp_INIT = glm::vec3(0.0f, 1.0f, 0.0f);
 
+Camera camera = Camera(cameraPos_INIT, cameraTarget_INIT, cameraUp_INIT);
 
-
-//mouse cords (starts in the center)
-float lastX = SCR_WIDTH / 2, lastY = SCR_HEIGHT / 2;
-
+//mouse input setup (starts in the center)
+float lastX = screenWidth / 2, lastY = screenHeight / 2;
+bool cameraShouldMove = false;
+bool firstMouse = true;
 
 //timing 
 float lastFrame = 0.0f;
@@ -75,7 +78,7 @@ int main()
     // --------------------
    
 
-    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Rubik's Cube Simulator", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(screenWidth, screenHeight, "Rubik's Cube Simulator", NULL, NULL);
     if (window == NULL)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -303,12 +306,12 @@ int main()
 
         // world matricies
         glm::mat4 projection = glm::mat4(1.0f);
-        projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+        projection = glm::perspective(glm::radians(45.0f), (float)screenWidth / (float)screenHeight, 0.1f, 100.0f);
         //FOV -             Aspect Ratio -      Near Distance - Far Distance
         ourShader.setMat4("projection", projection);
-        //set direction of camera
-        view = glm::lookAt(cameraPos, cameraDirection, cameraUp);
-        ourShader.setMat4("view", view);
+   
+        //set the camera angle from the camera class 
+        ourShader.setMat4("view", camera.GetViewMatrix());
 
     
 
@@ -366,42 +369,59 @@ void processInput(GLFWwindow* window)
 }
 
 
-// glfw: whenever the window size changed (by OS or user resize) this callback function executes
-// ---------------------------------------------------------------------------------------------
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
-    //resize viewport to match new dimensions
-    glViewport(0, 0, width, height);
-    SCR_HEIGHT = height;
-    SCR_WIDTH = width;
-}
-
-
-void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
+void mouse_callback(GLFWwindow* window, double clickX, double clickY) {
     if (cameraShouldMove) {
-        float deltaX = xpos - lastX;
-        float deltaY = lastY - ypos;
-        lastX = xpos;
-        lastY = ypos;
+        if (firstMouse) {
+            lastX = clickX;
+            lastY = clickY;
+            firstMouse = false;
+        }
+       
+        glm::vec4 position(camera.GetEye(), 1);
+        glm::vec4 pivot(camera.GetLookAt(), 1);
 
-        const float senstivity = 0.1f;
-        deltaX *= senstivity;
-        deltaY *= senstivity;
+        // step 1 : Calculate the amount of rotation given the mouse movement.
+        float deltaAngleX = (2 * M_PI / screenWidth); // a movement from left to right = 2*PI = 360 deg
+        float deltaAngleY = (M_PI / screenHeight);  // a movement from top to bottom = PI = 180 deg
+        float xAngle = (lastX - clickX) * deltaAngleX;
+        float yAngle = (lastY - clickY) * deltaAngleY;
 
-        glm::vec2 dragDirection = glm::vec2(deltaX, deltaY);
-        std::cout << dragDirection[0] << " " << dragDirection[1] << std::endl;
+        // Extra step to handle the problem when the camera direction is the same as the up vector
+        float cosAngle = glm::dot(camera.GetViewDir(), glm::vec3(0, 1, 0));
+        if (cosAngle * glm::sign(yAngle) > 0.99f)
+            yAngle = 0;
+
+        // step 2: Rotate the camera around the pivot point on the first axis.
+        glm::mat4x4 rotationMatrixX(1.0f);
+        rotationMatrixX = glm::rotate(rotationMatrixX, xAngle, glm::vec3(0, 1, 0));
+        position = (rotationMatrixX * (position - pivot)) + pivot;
+
+        // step 3: Rotate the camera around the pivot point on the second axis.
+        glm::mat4x4 rotationMatrixY(1.0f);
+        rotationMatrixY = glm::rotate(rotationMatrixY, yAngle, camera.GetRightVector());
+        glm::vec3 finalPosition = (rotationMatrixY * (position - pivot)) + pivot;
+
+        // Update the camera view (we keep the same lookat and the same up vector)
+        camera.SetCameraView(finalPosition, camera.GetLookAt(), glm::vec3(0, 1, 0));
+
+        // Update the mouse position for the next rotation
+        lastX = clickX;
+        lastY = clickY;
     }  
 }
+
 //glfw : function is triggered on mouse click
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
+    //enables camera movement while the left mouse is pressed
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
         cameraShouldMove = true;
+        std::cout << "Camera unlocked" << std::endl;
     }
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
         cameraShouldMove = false;
+        std::cout << "Camera LOCKED" << std::endl;
     }
 }
-
 
 
 // glfw: whenever the mouse scroll wheel scrolls, this callback is called
@@ -409,6 +429,16 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
     ;//does nothing
+}
+
+// glfw: whenever the window size changed (by OS or user resize) this callback function executes
+// ---------------------------------------------------------------------------------------------
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+    //resize viewport to match new dimensions
+    glViewport(0, 0, width, height);
+    screenHeight = height;
+    screenWidth = width;
 }
 
 // draws the current FPS and time per frame in the window title

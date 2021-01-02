@@ -142,6 +142,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="camera.cpp" />
     <ClCompile Include="GLcube.cpp" />
     <ClCompile Include="cubetroller.cpp" />
     <ClCompile Include="cubie.cpp" />
