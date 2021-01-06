@@ -30,7 +30,7 @@
     <ClCompile Include="GLcube.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="camera.cpp">
+    <ClCompile Include="arcballCamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

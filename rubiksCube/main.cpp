@@ -12,7 +12,7 @@
 #include <cubie.h>
 #include <GLcube.h>
 #include <cubetroller.h>
-#include <camera.h>
+#include <arcballCamera.h>
 
 #include <iostream>
 #include <filesystem>
@@ -42,20 +42,13 @@ Cubetroller cubetroller = Cubetroller();
 
 // camera setup
 // ------------------------------------
-// camera is done after the cube declariation so that the cube can be centered in the frame (starts from 0,0 and goes to +dim, +dim)
-// the "eye" location
-glm::vec3 cameraPos_INIT = glm::vec3(dimension * 2.25f, dimension * 2.25f, dimension * 2.25f);
-//the target to look at 
-glm::vec3 cameraTarget_INIT = glm::vec3(0.0f, 0.0f, 0.0f); //camera should always look at the origin (center of the cube)
-// "up" relative to the world (positive Y)
-glm::vec3 cameraUp_INIT = glm::vec3(0.0f, 1.0f, 0.0f);
-
-Camera camera = Camera(cameraPos_INIT, cameraTarget_INIT, cameraUp_INIT);
+arcballCamera arcball = arcballCamera(screenWidth, screenHeight, 0.05f, true, true);
 
 //mouse input setup (starts in the center)
 float lastX = screenWidth / 2, lastY = screenHeight / 2;
 bool cameraShouldMove = false;
 bool firstMouse = true;
+glm::vec3 clickPoint;
 
 //timing 
 float lastFrame = 0.0f;
@@ -69,8 +62,8 @@ int main()
     // glfw: initialize and configure
     // ------------------------------
     glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 
@@ -310,10 +303,13 @@ int main()
         //FOV -             Aspect Ratio -      Near Distance - Far Distance
         ourShader.setMat4("projection", projection);
    
-        //set the camera angle from the camera class 
-        ourShader.setMat4("view", camera.GetViewMatrix());
+        //set the camera angle from the camera class, first will init to the glmlook at
+        glm::mat4 view = glm::lookAt(glm::vec3(dimension * 1.5, dimension * 1.5, dimension * 1.5), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+        glm::mat4 rotatedView = arcball.createViewRotationMatrix(view);
 
-    
+        ourShader.setMat4("view", rotatedView);
+      
+        
 
         //draw the cube
         cube.drawCubies(&ourShader);
@@ -369,58 +365,20 @@ void processInput(GLFWwindow* window)
 }
 
 
-void mouse_callback(GLFWwindow* window, double clickX, double clickY) {
-    if (cameraShouldMove) {
-        if (firstMouse) {
-            lastX = clickX;
-            lastY = clickY;
-            firstMouse = false;
-        }
-       
-        glm::vec4 position(camera.GetEye(), 1);
-        glm::vec4 pivot(camera.GetLookAt(), 1);
-
-        // step 1 : Calculate the amount of rotation given the mouse movement.
-        float deltaAngleX = (2 * M_PI / screenWidth); // a movement from left to right = 2*PI = 360 deg
-        float deltaAngleY = (M_PI / screenHeight);  // a movement from top to bottom = PI = 180 deg
-        float xAngle = (lastX - clickX) * deltaAngleX;
-        float yAngle = (lastY - clickY) * deltaAngleY;
-
-        // Extra step to handle the problem when the camera direction is the same as the up vector
-        float cosAngle = glm::dot(camera.GetViewDir(), glm::vec3(0, 1, 0));
-        if (cosAngle * glm::sign(yAngle) > 0.99f)
-            yAngle = 0;
-
-        // step 2: Rotate the camera around the pivot point on the first axis.
-        glm::mat4x4 rotationMatrixX(1.0f);
-        rotationMatrixX = glm::rotate(rotationMatrixX, xAngle, glm::vec3(0, 1, 0));
-        position = (rotationMatrixX * (position - pivot)) + pivot;
-
-        // step 3: Rotate the camera around the pivot point on the second axis.
-        glm::mat4x4 rotationMatrixY(1.0f);
-        rotationMatrixY = glm::rotate(rotationMatrixY, yAngle, camera.GetRightVector());
-        glm::vec3 finalPosition = (rotationMatrixY * (position - pivot)) + pivot;
-
-        // Update the camera view (we keep the same lookat and the same up vector)
-        camera.SetCameraView(finalPosition, camera.GetLookAt(), glm::vec3(0, 1, 0));
-
-        // Update the mouse position for the next rotation
-        lastX = clickX;
-        lastY = clickY;
-    }  
+void mouse_callback(GLFWwindow* window, double currentX, double currentY) {
+    if (firstMouse) {
+        lastX = currentX;
+        lastY = currentY;
+        firstMouse = false;
+    }
+    arcball.cursorCallback(window, currentX, currentY);
+ 
 }
 
 //glfw : function is triggered on mouse click
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
-    //enables camera movement while the left mouse is pressed
-    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
-        cameraShouldMove = true;
-        std::cout << "Camera unlocked" << std::endl;
-    }
-    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
-        cameraShouldMove = false;
-        std::cout << "Camera LOCKED" << std::endl;
-    }
+    //will return true if left click, will default to false if left unclicks
+    arcball.mouseButtonCallback(window, button, action, mods);
 }
 
 
