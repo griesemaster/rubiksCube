@@ -1,0 +1,65 @@
+#include "arcballCamera.h"
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/quaternion.hpp>
+
+#include <iostream>
+
+arcballCamera::arcballCamera(int windowWidth, int windowHeight, bool useXAxis, bool useYAxis) {
+    this->windowWidth = windowWidth;
+    this->windowHeight = windowHeight;
+
+    this->isMouseActive = false;
+    this->angle = 0.0f;
+    this->rotationAxis = glm::vec3(0.0f, 1.0f, 0.0f);
+
+    this->useXAxis = useXAxis;
+    this->useYAxis = useYAxis;
+
+    currentPosition = glm::vec3(0, 0, 0);
+    startPosition = glm::vec3(0, 0, 0);
+}
+
+//mouse callbacks -----------------------------------------------------------------------------------
+void arcballCamera::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
+    isMouseActive = (action == GLFW_PRESS && button == GLFW_MOUSE_BUTTON_LEFT);
+    if (isMouseActive) {
+        double x, y;
+        glfwGetCursorPos(window, &x, &y);
+        startPosition.x = x;
+        startPosition.y = y;
+        startPosition.z = mapToBall(x, y);
+    }
+    if (action == GLFW_RELEASE && button == GLFW_MOUSE_BUTTON_LEFT) {
+        currentPosition = glm::vec3(0);
+        startPosition = glm::vec3(0);
+    }
+}
+
+void arcballCamera::cursorCallback(GLFWwindow* window, double x, double y) {
+    if (isMouseActive) {//mouse is being held while moving
+        currentPosition.x = x;
+        currentPosition.y = y;
+        currentPosition.z = mapToBall(x, y);
+       
+    }
+    else {
+        return;
+    }
+}
+
+double arcballCamera::mapToBall(double x, double y) {
+    float radius = glm::min(windowWidth / 2.0f, windowHeight / 2.0f);
+
+}
+
+
+
+void arcballCamera::translate(glm::vec3 translation) {
+    locationMatrix = glm::translate(locationMatrix, translation);
+}
+
+
+
+
+///https://github.com/dustin-biser/OpenGL-Sandbox/blob/master/src/util/Camera.java
+//check out this quat based camera

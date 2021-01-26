@@ -42,7 +42,7 @@ Cubetroller cubetroller = Cubetroller();
 
 // camera setup
 // ------------------------------------
-arcballCamera arcball = arcballCamera(screenWidth, screenHeight, 0.05f, true, true);
+arcballCamera arcball = arcballCamera(screenWidth, screenHeight, 0.05f);
 
 //mouse input setup (starts in the center)
 float lastX = screenWidth / 2, lastY = screenHeight / 2;
@@ -302,19 +302,16 @@ int main()
         projection = glm::perspective(glm::radians(45.0f), (float)screenWidth / (float)screenHeight, 0.1f, 100.0f);
         //FOV -             Aspect Ratio -      Near Distance - Far Distance
         ourShader.setMat4("projection", projection);
-   
-        //set the camera angle from the camera class, first will init to the glmlook at
-        glm::mat4 view = glm::lookAt(glm::vec3(dimension * 1.5, dimension * 1.5, dimension * 1.5), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
-        glm::mat4 rotatedView = arcball.createViewRotationMatrix(view);
+          
 
-        ourShader.setMat4("view", rotatedView);
+        ourShader.setMat4("view", arcball.getViewMatrix());
       
         
 
         //draw the cube
         cube.drawCubies(&ourShader);
 
-        //display FPS
+        //display FPS in name bar
         showFPS(window);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)

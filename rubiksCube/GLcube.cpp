@@ -64,10 +64,10 @@ bool Cube::checkValidCommand() {
 //generates a rotation matrix based on a given rotation axis and angle (passed in radians). Used to generate the next roation for a given cubie.
 glm::mat4 Cube::generateQuatRotation(glm::vec3 rotationAxis, float angle) {
 	//create w,x,y,z to define a quaterion
-	float w = cos(angle / 2);
-	float x = rotationAxis[0] * sin(angle / 2);
-	float y = rotationAxis[1] * sin(angle / 2);
-	float z = rotationAxis[2] * sin(angle / 2);
+	float w = cos(angle / 2.0f);
+	float x = rotationAxis[0] * sin(angle / 2.0f);
+	float y = rotationAxis[1] * sin(angle / 2.0f);
+	float z = rotationAxis[2] * sin(angle / 2.0f);
 	//construct the quat
 	glm::quat rotationQuat = glm::quat(w, x, y, z);
 	glm::mat4 newRotation = glm::toMat4(rotationQuat);

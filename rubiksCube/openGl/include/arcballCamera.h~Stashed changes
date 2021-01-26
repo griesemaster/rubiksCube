@@ -17,26 +17,31 @@ private:
 	int windowHeight;
 	bool isMouseActive;
 
-	float rollSpeed;
     float angle;
 
-    glm::vec3 cursorStart;
-    glm::vec3 cursorCurrent;
+    glm::vec3 startPosition;
+    glm::vec3 currentPosition;
     glm::vec3 rotationAxis;
 
+    bool useXAxis;
+    bool useYAxis;
 
-    glm::quat currentOrientation = glm::quat(1, 0, 0, 0);
-    glm::mat4 currentLocation = glm::mat4(1);
 
+    glm::mat4 locationMatrix = glm::mat4(1); //used to hold translation data
+    glm::quat orientationQuat = glm::quat(1, 0, 0, 0); //used to hold rotational data
+    
 public:
-    arcballCamera(int window_width, int window_height, float roll_speed = 1.0f);
-    glm::vec3 toBall(double x, double y);
+    arcballCamera(int window_width, int window_height, bool useX = true, bool useY = true);
+
 
     void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
     void cursorCallback(GLFWwindow* window, double x, double y);
+    double mapToBall(double x, double y);
 
-    void updateViewMatrix();
-    glm::mat4 getViewMatrix();
+
+    glm::mat4 getViewMatrix() { return locationMatrix * glm::toMat4(orientationQuat); };
+
+    void translate(glm::vec3);
 
 };
 
