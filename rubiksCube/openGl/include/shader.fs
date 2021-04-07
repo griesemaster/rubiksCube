@@ -1,3 +1,4 @@
+R"(
 #version 330 core
 out vec4 FragColor;
 in vec3 ourColor;
@@ -8,3 +9,5 @@ void main()
 }
 
 //TODO: clear out the old color code
+
+)"
