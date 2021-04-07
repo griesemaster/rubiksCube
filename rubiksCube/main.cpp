@@ -107,7 +107,13 @@ int main()
 
     // build and compile our shader program
     // ------------------------------------
-    Shader ourShader("C:\\Users\\Michael\\source\\repos\\rubiksCube\\rubiksCube\\openGl\\shaderSrc\\shader.vs", "C:\\Users\\Michael\\source\\repos\\rubiksCube\\rubiksCube\\openGl\\shaderSrc\\shader.fs");
+    const std::string vertexSource =
+#include <shader.vs>
+        ;
+    const std::string fragmentSource =
+#include <shader.fs>
+        ;
+    Shader ourShader(&vertexSource, &fragmentSource);
 
 
     //Vertex Data for a square with face made of two triangles 
