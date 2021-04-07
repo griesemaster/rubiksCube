@@ -20,6 +20,7 @@ private:
 	int cubeDimension;
 
 	glm::mat4 generateQuatRotation(glm::vec3 rotationDirection, float angle);
+	glm::quat genQuat(glm::vec3 rotationDirection, float angle);
 	glm::vec2 getNewCords(float x, float y, float rotationDir);
 
 public:
@@ -39,6 +40,7 @@ public:
 	bool checkValidCommand();
 
 	//Z Face Rotations
+	void rotateZClockwiseFrontQUATSTACK(bool automated); ///DEV USE ONLY REMOVE LATER
 	void rotateZClockwiseFront(bool automated);
 	void rotateZantiClockwiseFront(bool automated);
 	void rotateZClockwiseBack(bool automated);

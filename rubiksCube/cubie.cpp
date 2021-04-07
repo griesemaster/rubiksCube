@@ -2,15 +2,25 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/quaternion.hpp>
 #include <iostream>
 #include <glm/ext.hpp>
 #include <glm/gtx/string_cast.hpp>
 #include <shader.h>
 #include <GLFW/glfw3.h>
 #include <shader.h>
+#include <list>
 
 
 void Cubie::draw(Shader* shader) {
+	
+	if (!rotationList.empty()) {//if there is a rotation to apply, then apply one before drawing
+		auto iter = rotationList.begin();
+		rotate(glm::toMat4(*iter));
+		rotationList.pop_front();
+	}
+	
 	glm::mat4 modelMatrix = translationMatrix * rotationMatrix;
 	(*shader).setMat4("model", modelMatrix);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
